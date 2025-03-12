@@ -1,0 +1,43 @@
+name: Run Unity Script
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  run-unity-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: Unity スクリプトを実行
+        uses: game-ci/unity-builder@v4
+        with:
+          unityVersion: 2022.3.54f1
+          buildMethod: UMLGenerator.Generate
+          targetPlatform: StandaloneLinux64  # ターゲットプラットフォームを指定
+          allowDirtyBuild: true  # 変更がある場合も実行可能に
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: ビルド成果物をアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: UMLGenerator
+          path: UML/Result
+
+      - name: Discord に結果を送信
+        uses: appleboy/discord-action@0.0.3
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          color: "#48f442"
+          username: "GitHub Bot"
+          message: "UMLクラス図生成完了しました。"
+          file: "UML/Result/UML.md"  # ファイルを直接添付
