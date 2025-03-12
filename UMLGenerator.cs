@@ -7,56 +7,56 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-//GitHubAction ‚ÅUML‚ğ¶¬‚·‚éƒNƒ‰ƒX‚È‚Ì‚ÅG‚ç‚È‚¢‚Å‚­‚¾‚³‚¢B
+//GitHubAction ã§UMLã‚’ç”Ÿæˆã™ã‚‹ã‚¯ãƒ©ã‚¹ãªã®ã§è§¦ã‚‰ãªã„ã§ãã ã•ã„ã€‚
 
 public class UMLGenerator
 {
-    // è“®İ’è‚·‚éê‡
+    // æ‰‹å‹•è¨­å®šã™ã‚‹å ´åˆ
     [MenuItem("Tools/UMLGenerate")]
     public static void Generate()
     {
         string path;
         string outputFile;
-        path = "Assets/Project/Scripts"; // ‰ğÍ‘ÎÛ‚ÌƒfƒBƒŒƒNƒgƒŠ
-        outputFile = "UML/Result/UML.md"; // o—Íƒtƒ@ƒCƒ‹
-        //ƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğæ“¾
+        path = "Your/Project/Scripts"; // è§£æå¯¾è±¡ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+        outputFile = "UML/Result/UML.md"; // å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«
+        //ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’å–å¾—
         path = Path.GetFullPath(path);
-        //ƒ\[ƒXƒR[ƒhƒtƒ@ƒCƒ‹‚Ìæ“¾
+        //ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®å–å¾—
         var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
         var syntaxTrees = files
             .Select(file => CSharpSyntaxTree.ParseText(File.ReadAllText(file)))
             .ToList();
-        //œŠO‚·‚éƒNƒ‰ƒX
+        //é™¤å¤–ã™ã‚‹ã‚¯ãƒ©ã‚¹
         HashSet<string> excludedTypes = new HashSet<string> { "Transform", "GameObject" };
-        //‹L˜^‚µ‚½UMLƒNƒ‰ƒX}
+        //è¨˜éŒ²ã—ãŸUMLã‚¯ãƒ©ã‚¹å›³
         List<string> resultClass = new List<string>();
         foreach (var syntaxTree in syntaxTrees)
         {
-            //‘S‚Ä‚Ìƒ‹[ƒg‚ğæ“¾
+            //å…¨ã¦ã®ãƒ«ãƒ¼ãƒˆã‚’å–å¾—
             SyntaxNode root = syntaxTree.GetRoot();
-            //ƒNƒ‰ƒX‚Ìƒ‹[ƒg‚ğæ“¾
+            //ã‚¯ãƒ©ã‚¹ã®ãƒ«ãƒ¼ãƒˆã‚’å–å¾—
             var classes = root.DescendantNodes().OfType<ClassDeclarationSyntax>();
-            //interface‚Ìƒ‹[ƒg‚ğæ“¾
+            //interfaceã®ãƒ«ãƒ¼ãƒˆã‚’å–å¾—
             var interfaces = root.DescendantNodes().OfType<InterfaceDeclarationSyntax>();
 
             foreach (var classDeclaration in classes)
             {
                 string className = classDeclaration.Identifier.Text;
-                //ƒNƒ‰ƒX‚Ìƒƒ\ƒbƒh‚ğæ“¾
+                //ã‚¯ãƒ©ã‚¹ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å–å¾—
                 var mehods = classDeclaration.Members.OfType<MethodDeclarationSyntax>();
-                //•Ï”‚ğæ“¾(int‚âstring‚È‚Ç‚ÌˆË‘¶‚ğœŠO)
+                //å¤‰æ•°ã‚’å–å¾—(intã‚„stringãªã©ã®ä¾å­˜ã‚’é™¤å¤–)
                 var variables = classDeclaration.Members
                     .OfType<FieldDeclarationSyntax>()
                     .Where(f =>
-                        !(f.Declaration.Type is PredefinedTypeSyntax) && // ‘g‚İ‚İŒ^‚ÌœŠO
-                        !(f.Declaration.Type is NullableTypeSyntax) &&     // NullableŒ^ (CustomType?) ‚ÌœŠO
+                        !(f.Declaration.Type is PredefinedTypeSyntax) && // çµ„ã¿è¾¼ã¿å‹ã®é™¤å¤–
+                        !(f.Declaration.Type is NullableTypeSyntax) &&     // Nullableå‹ (CustomType?) ã®é™¤å¤–
                         !(f.Declaration.Type.ToString() is string typeName && excludedTypes.Contains(typeName)))
                     .ToList();
 
-                //ƒvƒƒpƒeƒB‚Ìæ“¾
+                //ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã®å–å¾—
                 var properties = classDeclaration.DescendantNodes().OfType<PropertyDeclarationSyntax>();
 
-                //ˆË‘¶‚ÌŒp³‚ğ‹L˜^
+                //ä¾å­˜ã®ç¶™æ‰¿ã‚’è¨˜éŒ²
                 if (classDeclaration.BaseList != null)
                 {
                     foreach (var baseType in classDeclaration.BaseList.Types)
@@ -64,7 +64,7 @@ public class UMLGenerator
                         resultClass.Add($"{baseType.Type} <|-- {className}");
                     }
                 }
-                //•Ï”‚ÌˆË‘¶«‚ğ‹L˜^
+                //å¤‰æ•°ã®ä¾å­˜æ€§ã‚’è¨˜éŒ²
                 foreach (var variable in variables)
                 {
                     if (variable.Declaration.Type is ArrayTypeSyntax)
@@ -88,7 +88,7 @@ public class UMLGenerator
                         resultClass.Add($"{className} --> {typeName}");
                     }
                 }
-                //ƒvƒƒpƒeƒB‚ÌˆË‘¶«‚ğ‹L˜^
+                //ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã®ä¾å­˜æ€§ã‚’è¨˜éŒ²
                 foreach (var prop in properties)
                 {
                     string typeName = prop.Type.ToString();
@@ -98,7 +98,7 @@ public class UMLGenerator
 
         }
 
-        // o—ÍƒfƒBƒŒƒNƒgƒŠ‚ª‘¶İ‚µ‚È‚¢ê‡‚Íì¬
+        // å‡ºåŠ›ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒå­˜åœ¨ã—ãªã„å ´åˆã¯ä½œæˆ
         Directory.CreateDirectory(Path.GetDirectoryName(outputFile)!);
 
         using (StreamWriter writer = new StreamWriter(outputFile))
