@@ -4,7 +4,7 @@
 パスワードとメールアドレスを登録してください。
 ![image](https://github.com/user-attachments/assets/98a6344c-0ec9-4e60-9267-d87db525caba)
 
-そしてDiscodeに結果を送信するためにDiscodeのWebHOOKの登録をします。
+そしてDiscodに結果を送信するためにDiscodeのWebHOOKの登録をします。
 
 ![image](https://github.com/user-attachments/assets/4c4807fb-3e1f-462a-a578-28963728a803)
 
