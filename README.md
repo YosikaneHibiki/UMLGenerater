@@ -33,3 +33,8 @@ https://discord.com/api/webhooks/{WEBHOOK_ID}/{WEBHOOK_TOKEN}
 {WEBHOOK_TOKEN} → WebhookのTOKEN
 これを登録してください。
 
+# 注意事項
+このコードは勉強中ですのでUMLクラス図自体には集約やクラスの中身は存在しません
+### 存在するのは
+依存関係のみです
+
