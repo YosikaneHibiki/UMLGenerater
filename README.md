@@ -14,6 +14,7 @@
 ![image](https://github.com/user-attachments/assets/093a5e6b-018b-4626-aba8-fc362ab571fb)
 
 ここのパスを解析したいフォルダーに設定して下さい
+
 C＃クラスのUMLGeneratorをUnityのEditorファイルの中に入れてください(なければ作成する)
 
 # Secretの登録方法
